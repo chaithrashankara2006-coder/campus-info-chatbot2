@@ -1,11 +1,12 @@
+
 import os
+import streamlit as st
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Hardcoded campus location info
 CAMPUS_INFO = """
 PESCE Campus Location Information:
 - PES College of Engineering is located in Mandya, Karnataka, India
@@ -22,21 +23,31 @@ Campus Facility Locations:
 - Hostel: Boys hostel and Girls hostel within campus
 - Medical Center: Near Administrative Block
 - Sports Ground: Behind Main Building
-- Parking: Near Main Gate
 - Principal Office: Administrative Block, First Floor
 - Exam Cell: Administrative Block, Ground Floor
+
+Academic Calendar PESCE:
+- Odd Semester: August to December
+- Even Semester: January to May
+- Attendance Requirement: Minimum 75%
+- Fee Payment: Before semester start
 """
 
 def get_chatbot():
+    # Try Streamlit secrets first, then .env
+    try:
+        api_key = st.secrets["GROQ_API_KEY"]
+    except:
+        api_key = os.getenv("GROQ_API_KEY")
+
     llm = ChatGroq(
         model="llama-3.3-70b-versatile",
-        groq_api_key=os.getenv("GROQ_API_KEY"),
+        groq_api_key=api_key,
         max_tokens=500
     )
     return llm
 
 def ask_question(llm, context, question):
-    # Limit context to avoid token limit error
     limited_context = context[:3000] if context else ""
     
     messages = [
@@ -54,21 +65,3 @@ def ask_question(llm, context, question):
     ]
     response = llm.invoke(messages)
     return response.content
-CAMPUS_INFO = """
-... existing info ...
-
-Academic Calendar PESCE:
-- Odd Semester: August to December
-- Even Semester: January to May
-- Internal Assessment: Every 6 weeks
-- Semester End Exams: November/December and April/May
-- Attendance Requirement: Minimum 75%
-- Fee Payment: Before semester start
-
-Student Procedures:
-- Bonafide Certificate: Apply at admin office
-- Transcript: Apply at exam cell
-- Fee Payment: Online via college portal
-- ID Card: Student affairs office
-- Scholarship: SC/ST cell, OBC cell
-"""
