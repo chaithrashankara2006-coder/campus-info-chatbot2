@@ -11,7 +11,6 @@ st.set_page_config(
     layout="wide"
 )
 
-
 st.markdown("""
     <style>
     .main {background-color: #f5f5f5;}
@@ -30,15 +29,15 @@ st.caption("PES College of Engineering — AI Campus Assistant")
 # Department wise PDF paths and URLs
 dept_info = {
     "Computer Science & Engineering": {
-        "pdf": "data/CSE.pdf",
+        "pdf": "data/pdfs/CSE.pdf",
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "AI & Machine Learning": {
-        "pdf": "data/CSE.pdf",
+        "pdf": "data/pdfs/CSE.pdf",
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Data Science": {
-        "pdf": "data/CSE.pdf",
+        "pdf": "data/pdfs/CSE.pdf",
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Computer Science & Business Systems": {
@@ -93,7 +92,76 @@ dept_info = {
         "pdf": "",
         "url": "https://pesce.ac.in/facilities.php"
     },
+}
 
+dept_questions = {
+    "Library": [
+        ("📚 Library Timings", "What are the library timings?"),
+        ("📖 Books Available", "What books and resources are available in library?"),
+        ("🔖 How to Borrow", "How to borrow books from library?"),
+        ("💻 Digital Resources", "What digital resources are available in library?"),
+        ("📋 Library Rules", "What are the library rules?"),
+        ("🪑 Reading Room", "Is there a reading room in library?"),
+    ],
+    "Canteen": [
+        ("🍽️ Menu", "What food is available in canteen?"),
+        ("⏰ Timings", "What are the canteen timings?"),
+        ("💰 Price", "What are the canteen food prices?"),
+        ("🥗 Veg Options", "What vegetarian food is available?"),
+        ("🏪 Facilities", "What are the canteen facilities?"),
+        ("📍 Location", "Where is the canteen located?"),
+    ],
+    "Hostel": [
+        ("🏠 Facilities", "What are the hostel facilities?"),
+        ("📋 Rules", "What are the hostel rules?"),
+        ("⏰ Timings", "What are hostel in and out timings?"),
+        ("💰 Fees", "What is the hostel fee?"),
+        ("🍽️ Mess Info", "What are the mess timings and menu?"),
+        ("📞 Warden Contact", "Who is the hostel warden and contact?"),
+    ],
+    "Transport": [
+        ("🚌 Bus Routes", "What are the bus routes available?"),
+        ("⏰ Bus Timings", "What are the bus timings?"),
+        ("💰 Bus Fees", "What is the transport fee?"),
+        ("📍 Bus Stops", "What are the bus stop locations?"),
+        ("📞 Transport Contact", "Who to contact for transport info?"),
+        ("🔄 Route Changes", "How to apply for route change?"),
+    ],
+    "Placement Cell": [
+        ("🏢 Companies", "Which companies visit for placements?"),
+        ("📊 Placement Stats", "What are the placement statistics?"),
+        ("📝 How to Register", "How to register for placements?"),
+        ("💼 Internships", "How to get internships through college?"),
+        ("📞 Contact", "What are placement cell contact details?"),
+        ("📅 Schedule", "What is the placement schedule?"),
+    ],
+    "College Rules": [
+        ("👗 Dress Code", "What is the dress code at PESCE?"),
+        ("📱 Mobile Policy", "What is the mobile phone policy?"),
+        ("⏰ Attendance", "What is the attendance requirement?"),
+        ("🚫 Prohibited", "What is prohibited on campus?"),
+        ("📋 General Rules", "What are the general college rules?"),
+        ("🎓 Exam Rules", "What are the examination rules?"),
+    ],
+    "Sports & Facilities": [
+        ("⚽ Sports Available", "What sports facilities are available?"),
+        ("⏰ Ground Timings", "What are the sports ground timings?"),
+        ("🏆 Achievements", "What are sports achievements of PESCE?"),
+        ("📝 How to Join", "How to join sports teams?"),
+        ("🏊 Other Facilities", "What other facilities are available on campus?"),
+        ("👕 Sports Events", "What sports events are conducted?"),
+    ],
+    "default": [
+        ("👨‍🏫 Who is HOD?", "Who is the HOD?"),
+        ("🏢 Placement Info", "What are the placement details?"),
+        ("📚 Courses Offered", "What courses are offered?"),
+        ("🔬 Research Info", "What are the research activities?"),
+        ("🏛️ About Department", "Tell me about this department?"),
+        ("📞 Contact Info", "What are the contact details?"),
+        ("🎭 Clubs & Events", "What are the clubs and events?"),
+        ("🏆 Achievements", "What are the achievements?"),
+        ("👨‍🎓 Faculty List", "Who are the faculty members?"),
+    ],
 }
 
 # Initialize session state
@@ -109,7 +177,7 @@ if "messages" not in st.session_state:
 if "selected_dept" not in st.session_state:
     st.session_state.selected_dept = "Computer Science & Engineering"
 
-
+# Functions
 def load_dept_data(dept):
     if dept not in st.session_state.vector_stores:
         info = dept_info.get(dept, {})
@@ -117,29 +185,31 @@ def load_dept_data(dept):
         url = info.get("url", "")
         combined_text = ""
 
-        # Load PDF only if path is given AND file exists
         if pdf_path and os.path.exists(pdf_path):
             combined_text += process_pdf(pdf_path)
-        
-        # Always try website scraping
+
         if url:
             scraped = scrape_website(url)
             if scraped and "Error" not in scraped:
                 combined_text += "\n" + scraped
 
-        # If nothing loaded, use basic info
         if not combined_text.strip():
             combined_text = f"Information about {dept} at PES College of Engineering, Mandya, Karnataka."
 
         st.session_state.vector_stores[dept] = (
             create_vector_store(combined_text)
         )
-        return True
     return True
 
-
-
-
+def get_response(prompt):
+    current_store = st.session_state.vector_stores.get(
+        st.session_state.selected_dept
+    )
+    if current_store:
+        context = search_context(current_store, prompt)
+    else:
+        context = "No information loaded yet."
+    return ask_question(st.session_state.llm, context, prompt)
 
 # Sidebar
 with st.sidebar:
@@ -149,35 +219,25 @@ with st.sidebar:
         list(dept_info.keys())
     )
 
-    # Reset chat when department changes
     if dept != st.session_state.selected_dept:
         st.session_state.selected_dept = dept
         st.session_state.messages = []
 
     st.divider()
 
-    # Auto load button
     if st.button("🔄 Load Department Data"):
         with st.spinner(f"Loading {dept} data..."):
-            success = load_dept_data(dept)
-            if success:
-                st.success(f"{dept} loaded! ✅")
-            else:
-                st.warning(
-                    f"No PDF found for {dept}. "
-                    f"Please upload PDF below."
-                )
+            load_dept_data(dept)
+            st.success(f"{dept} loaded! ✅")
 
     st.divider()
 
-    # Manual PDF upload option
     st.write("📤 Upload PDF manually:")
     uploaded_file = st.file_uploader(
         f"Upload {dept} PDF",
         type="pdf"
     )
     if uploaded_file:
-        # Save to dept specific path
         pdf_path = f"data/pdfs/{dept.replace(' ', '_')}.pdf"
         os.makedirs("data/pdfs", exist_ok=True)
         with open(pdf_path, "wb") as f:
@@ -191,7 +251,6 @@ with st.sidebar:
 
     st.divider()
 
-    # Show loaded departments
     st.header("📊 Loaded Departments")
     for d in dept_info.keys():
         if d in st.session_state.vector_stores:
@@ -212,7 +271,6 @@ with st.sidebar:
     st.write("**College:** +91 9448282588")
     st.write("📧 admissions@pesce.ac.in")
     st.write("🌐 pesce.ac.in")
-
     st.divider()
     st.header("📍 Location")
     st.write("**PESCE, Mandya, Karnataka**")
@@ -220,91 +278,42 @@ with st.sidebar:
     st.write("📞 Emergency: 112")
     st.write("🏥 Medical: +91 9448282588")
 
-# Auto load current department data on startup
+# Auto load on startup
 if dept not in st.session_state.vector_stores:
     with st.spinner(f"Loading {dept} data..."):
         load_dept_data(dept)
 
-# Quick question buttons
-st.subheader(f"💡 Quick Questions — {dept}")
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    if st.button("👨‍🏫 Who is HOD?"):
-        st.session_state.quick_q = (
-            f"Who is the HOD of {dept} department?"
-        )
-with col2:
-    if st.button("🏢 Placement Info"):
-        st.session_state.quick_q = (
-            f"What are the placement details for {dept}?"
-        )
-with col3:
-    if st.button("📚 Courses Offered"):
-        st.session_state.quick_q = (
-            f"What courses are offered in {dept}?"
-        )
-
-col4, col5, col6 = st.columns(3)
-with col4:
-    if st.button("🔬 Research Info"):
-        st.session_state.quick_q = (
-            f"What are the research activities in {dept}?"
-        )
-with col5:
-    if st.button("🏛️ About Department"):
-        st.session_state.quick_q = (
-            f"Tell me about {dept} department?"
-        )
-with col6:
-    if st.button("📞 Contact Info"):
-        st.session_state.quick_q = (
-            f"What are the contact details of {dept}?"
-        )
-
-col7, col8, col9 = st.columns(3)
-with col7:
-    if st.button("🎭 Clubs & Events"):
-        st.session_state.quick_q = (
-            f"What are the clubs and events in {dept}?"
-        )
-with col8:
-    if st.button("🏆 Achievements"):
-        st.session_state.quick_q = (
-            f"What are the achievements of {dept}?"
-        )
-with col9:
-    if st.button("👨‍🎓 Faculty List"):
-        st.session_state.quick_q = (
-            f"Who are the faculty members in {dept}?"
-        )
-col10, col11, col12 = st.columns(3)
-with col10:
-    if st.button("📍 Location & Map"):
-        st.session_state.quick_q = (
-            "Where is PESCE located? How to reach the college?"
-        )
-with col11:
-    if st.button("🚌 Transport Info"):
-        st.session_state.quick_q = (
-            "What are the bus routes and transport facilities?"
-        )
-with col12:
-    if st.button("🏠 Hostel Info"):
-        st.session_state.quick_q = (
-            "What are the hostel facilities and rules at PESCE?"
-        )
-
-st.divider()
-
-# Status message
+# Status
 if dept in st.session_state.vector_stores:
     st.success(f"✅ {dept} data loaded — Ready to answer!")
 else:
-    st.warning(
-        f"⚠️ No data for {dept}. "
-        f"Click 'Load Department Data' in sidebar."
-    )
+    st.warning(f"⚠️ No data for {dept}. Click 'Load Department Data'.")
+
+# Dynamic quick questions
+st.subheader(f"💡 Quick Questions — {dept}")
+questions = dept_questions.get(dept, dept_questions["default"])
+
+cols = st.columns(3)
+for i, (label, question) in enumerate(questions):
+    with cols[i % 3]:
+        if st.button(label, key=f"q_{i}"):
+            st.session_state.quick_q = question
+
+st.divider()
+
+st.caption("📍 General Campus Info")
+location_questions = [
+    ("📍 Location & Map", "Where is PESCE located? How to reach the college?"),
+    ("🚌 Transport Info", "What are the bus routes and transport facilities?"),
+    ("🏠 Hostel Info", "What are the hostel facilities and rules at PESCE?"),
+]
+loc_cols = st.columns(3)
+for i, (label, question) in enumerate(location_questions):
+    with loc_cols[i]:
+        if st.button(label, key=f"loc_{i}"):
+            st.session_state.quick_q = question
+
+st.divider()
 
 # Chat interface
 st.subheader("💬 Chat")
@@ -312,27 +321,15 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.write(msg["content"])
 
-def get_response(prompt):
-    current_store = st.session_state.vector_stores.get(
-        st.session_state.selected_dept
-    )
-    if current_store:
-        context = search_context(current_store, prompt)
-    else:
-        context = f"No information loaded for {dept} yet."
-    return ask_question(st.session_state.llm, context, prompt)
-
 # Handle quick questions
 if "quick_q" in st.session_state:
     prompt = st.session_state.quick_q
     del st.session_state.quick_q
-
     st.session_state.messages.append(
         {"role": "user", "content": prompt}
     )
     with st.chat_message("user"):
         st.write(prompt)
-
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             response = get_response(prompt)
@@ -348,7 +345,6 @@ if prompt := st.chat_input(f"Ask about {dept}..."):
     )
     with st.chat_message("user"):
         st.write(prompt)
-
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             response = get_response(prompt)
