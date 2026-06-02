@@ -1,10 +1,15 @@
 streamlit
 langchain
 langchain-community
-openai
+langchain-core
+langchain-groq
+langchain-huggingface
+langchain-text-splitters
 beautifulsoup4
 requests
 faiss-cpu
 pypdf2
 python-dotenv
 pandas
+sentence-transformers
+groq

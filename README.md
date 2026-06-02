@@ -1,24 +1,68 @@
-# 🎓 Campus Info Chatbot
+# 🎓 Campus Info Chatbot — PESCE
 
-An AI-powered campus information chatbot for Anna University.
+AI-powered campus information assistant for
+PES College of Engineering, Mandya.
 
 ## Features
+- Department-wise information for 16 departments
+- PDF document processing
 - Web scraping from college website
-- PDF document processing  
-- AI-powered responses using Groq LLM
-- Interactive Streamlit UI
-
-## Setup Instructions
-1. Clone the repository
-2. Create virtual environment: `python -m venv venv`
-3. Activate: `venv\Scripts\activate`
-4. Install libraries: `pip install -r requirements.txt`
-5. Add your API key in `.env` file
-6. Run: `python -m streamlit run app.py`
+- FAISS vector search
+- Library, Canteen, Hostel, Transport info
+- Location and contact directory
+- Dynamic quick question buttons
 
 ## Tech Stack
-- Python, Streamlit, LangChain, Groq API, BeautifulSoup
+- Frontend: Streamlit
+- AI: Groq LLaMA 3.3
+- Vector DB: FAISS
+- Embeddings: HuggingFace
+- Web Scraping: BeautifulSoup
+- PDF Processing: PyPDF2
+- Framework: LangChain
 
-## Team
-- Project: Campus Info Chatbot
-- College: Anna University
+## Setup Instructions
+
+1. Clone repository:
+   git clone https://github.com/YOURNAME/campus-info-chatbot
+
+2. Create virtual environment:
+   python -m venv venv
+   venv\Scripts\activate
+
+3. Install libraries:
+   pip install -r requirements.txt
+
+4. Create .env file:
+   GROQ_API_KEY=your_key_here
+
+5. Add PDFs to data/pdfs/ folder
+
+6. Run:
+   streamlit run app.py
+
+## Project Structure
+campus-chatbot/
+├── app.py
+├── requirements.txt
+├── .env
+├── README.md
+├── data/
+│   └── pdfs/
+│       ├── CSE.pdf
+│       ├── ECE.pdf
+│       └── ...
+└── src/
+    ├── chatbot.py
+    ├── document_processor.py
+    ├── vector_store.py
+    └── web_scraper.py
+
+## Team Members
+- Member 1
+- Member 2
+- Member 3
+
+## College
+PES College of Engineering, Mandya, Karnataka
+pesce.ac.in
