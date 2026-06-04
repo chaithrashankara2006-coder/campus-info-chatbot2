@@ -340,6 +340,9 @@ if "quick_q" in st.session_state:
 
 # User input
 if prompt := st.chat_input(f"Ask about {dept}..."):
+    if len(prompt.strip()) < 3:
+        st.warning("Please enter a valid question!")
+        st.stop()
     st.session_state.messages.append(
         {"role": "user", "content": prompt}
     )

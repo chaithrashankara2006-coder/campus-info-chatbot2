@@ -57,11 +57,18 @@ def ask_question(llm, context, question):
         Always use this campus info:
         {CAMPUS_INFO}
         
-        Additional context:
+        Additional context from department data:
         {limited_context}
         
-        Give short, direct answers. Max 3-4 sentences."""),
+        IMPORTANT RULES:
+        - If question is about CONTACT INFO of a department, give department specific contacts from context
+        - If question is about LOCATION, give campus location
+        - If question is about HOD, give HOD name from context
+        - Always give SPECIFIC answers, not general ones
+        - Max 3-4 sentences
+        - If department specific info not found, say "Please visit pesce.ac.in or contact +91 9448282588" """),
         HumanMessage(content=question)
     ]
     response = llm.invoke(messages)
     return response.content
+    

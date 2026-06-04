@@ -24,7 +24,7 @@ PES College of Engineering, Mandya.
 ## Setup Instructions
 
 1. Clone repository:
-   git clone https://github.com/YOURNAME/campus-info-chatbot
+   git clone https://github.com/chaithrashankara2006-coder/campus-info-chatbot
 
 2. Create virtual environment:
    python -m venv venv
@@ -59,10 +59,29 @@ campus-chatbot/
     └── web_scraper.py
 
 ## Team Members
-- Member 1
-- Member 2
-- Member 3
+- Chaithra M S
+- Afeefa Eram
+- NithyaShree A H
+- Prakruthi K T
 
 ## College
 PES College of Engineering, Mandya, Karnataka
 pesce.ac.in
+
+## Architecture
+
+User Query
+    ↓
+Streamlit UI
+    ↓
+FAISS Vector Search
+    ↓
+Context Retrieval
+    ↓
+Groq LLaMA 3.3 AI
+    ↓
+Answer displayed to user
+
+Data Sources:
+- Department PDFs → PyPDF2 → FAISS
+- College Website → BeautifulSoup → FAISS
