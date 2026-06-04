@@ -53,22 +53,25 @@ def ask_question(llm, context, question):
     messages = [
         SystemMessage(content=f"""You are a helpful campus information 
         assistant for PES College of Engineering, Mandya.
-        
-        Always use this campus info:
-        {CAMPUS_INFO}
-        
-        Additional context from department data:
+
+        Use ONLY this context to answer:
         {limited_context}
-        
-        IMPORTANT RULES:
-        - If question is about CONTACT INFO of a department, give department specific contacts from context
-        - If question is about LOCATION, give campus location
-        - If question is about HOD, give HOD name from context
-        - Always give SPECIFIC answers, not general ones
-        - Max 3-4 sentences
-        - If department specific info not found, say "Please visit pesce.ac.in or contact +91 9448282588" """),
+
+        If context doesn't have the answer, use this:
+        {CAMPUS_INFO}
+
+        STRICT RULES:
+        - Answer ONLY about what is asked
+        - If asked about HOD, give HOD name only
+        - If asked about courses, give courses only
+        - If asked about contacts, give contacts only
+        - Do NOT mix location info with contact questions
+        - If info not found say exactly:
+          "This information is not available. 
+           Please contact: +91 9448282588 
+           or visit pesce.ac.in"
+        - Max 3 sentences"""),
         HumanMessage(content=question)
     ]
     response = llm.invoke(messages)
     return response.content
-    
