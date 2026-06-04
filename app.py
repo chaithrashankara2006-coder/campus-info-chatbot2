@@ -185,16 +185,26 @@ def load_dept_data(dept):
         url = info.get("url", "")
         combined_text = ""
 
-        if pdf_path and os.path.exists(pdf_path):
-            combined_text += process_pdf(pdf_path)
+        if pdf_path:
+            if os.path.exists(pdf_path):
+                pdf_text = process_pdf(pdf_path)
+                if pdf_text:
+                    combined_text += pdf_text
+                    st.sidebar.write(f"✅ PDF loaded: {len(pdf_text)} chars")
+                else:
+                    st.sidebar.write(f"⚠️ PDF empty: {pdf_path}")
+            else:
+                st.sidebar.write(f"❌ PDF not found: {pdf_path}")
 
         if url:
             scraped = scrape_website(url)
             if scraped and "Error" not in scraped:
                 combined_text += "\n" + scraped
+                st.sidebar.write(f"✅ Website scraped")
 
         if not combined_text.strip():
             combined_text = f"Information about {dept} at PES College of Engineering, Mandya, Karnataka."
+            st.sidebar.write(f"⚠️ Using fallback text")
 
         st.session_state.vector_stores[dept] = (
             create_vector_store(combined_text)
