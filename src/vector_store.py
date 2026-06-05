@@ -16,7 +16,16 @@ def create_vector_store(text):
     vector_store = FAISS.from_texts(chunks, embeddings)
     return vector_store
 
-def search_context(vector_store, question, k=8):
+def search_context(vector_store, question, k=10):
+    # Search with original question
     results = vector_store.similarity_search(question, k=k)
+    
+    # Also search with keywords
+    keywords = ["HOD", "Head of Department", "contact", "faculty", "professor"]
+    for keyword in keywords:
+        if keyword.lower() in question.lower():
+            extra = vector_store.similarity_search(keyword, k=3)
+            results += extra
+    
     context = "\n".join([doc.page_content for doc in results])
     return context
