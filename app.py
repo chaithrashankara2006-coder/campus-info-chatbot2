@@ -29,47 +29,47 @@ st.caption("PES College of Engineering — AI Campus Assistant")
 # Department wise PDF paths and URLs
 dept_info = {
     "Computer Science & Engineering": {
-        "pdf": "data/pdfs/CSE.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CSE.pdf"),
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "AI & Machine Learning": {
-        "pdf": "data/pdfs/CSE.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CSE.pdf"),
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Data Science": {
-        "pdf": "data/pdfs/CSE.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CSE.pdf"),
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Computer Science & Business Systems": {
-        "pdf": "data/pdfs/CSE.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CSE.pdf"),
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Electronics & Communication": {
-        "pdf": "data/pdfs/ECE.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "ECE.pdf"),
         "url": "https://pesce.ac.in/department-ece.php"
     },
     "Mechanical Engineering": {
-        "pdf": "data/pdfs/MECH.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "MECH.pdf"),
         "url": "https://pesce.ac.in/department-mechanical.php"
     },
     "Civil Engineering": {
-        "pdf": "data/pdfs/CIVIL.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CIVIL.pdf"),
         "url": "https://pesce.ac.in/department-civil.php"
     },
     "Electrical Engineering": {
-        "pdf": "data/pdfs/EEE.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "EEE.pdf"),
         "url": "https://pesce.ac.in/department-eee.php"
     },
     "Information Science": {
-        "pdf": "data/pdfs/ISE.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "ISE.pdf"),
         "url": "https://pesce.ac.in/department-ise.php"
     },
     "Library": {
-        "pdf": "data/pdfs/LIBRARY.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "LIBRARY.pdf"),
         "url": "https://pesce.ac.in"
     },
     "Canteen": {
-        "pdf": "data/pdfs/CANTEEN.pdf",
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CANTEEN.pdf"),
         "url": "https://pesce.ac.in"
     },
     "Placement Cell": {
