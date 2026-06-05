@@ -1,6 +1,7 @@
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import CharacterTextSplitter
+from langchain_community.embeddings import HuggingFaceEmbeddings
+import os
 
 def create_vector_store(text):
     splitter = CharacterTextSplitter(
@@ -8,11 +9,11 @@ def create_vector_store(text):
         chunk_overlap=200
     )
     chunks = splitter.split_text(text)
+    if not chunks:
+        chunks = [text]
     
     embeddings = HuggingFaceEmbeddings(
-        model_name="all-MiniLM-L6-v2",
-        model_kwargs={"device": "cpu"},
-        encode_kwargs={"normalize_embeddings": False}
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
     
     vector_store = FAISS.from_texts(chunks, embeddings)
