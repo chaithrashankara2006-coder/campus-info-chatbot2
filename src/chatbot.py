@@ -51,26 +51,21 @@ def ask_question(llm, context, question):
     limited_context = context[:6000] if context else ""
     
     messages = [
-        SystemMessage(content=f"""You are a helpful campus information 
-        assistant for PES College of Engineering, Mandya.
+        SystemMessage(content=f"""You are a helpful campus assistant for 
+PES College of Engineering, Mandya.
 
-        Use ONLY this context to answer:
-        {limited_context}
+CONTEXT FROM DOCUMENTS:
+{limited_context}
 
-        If context doesn't have the answer, use this:
-        {CAMPUS_INFO}
-
-        STRICT RULES:
-        - Answer ONLY about what is asked
-        - If asked about HOD, give HOD name only
-        - If asked about courses, give courses only
-        - If asked about contacts, give contacts only
-        - Do NOT mix location info with contact questions
-        - If info not found say exactly:
-          "This information is not available. 
-           Please contact: +91 9448282588 
-           or visit pesce.ac.in"
-        - Max 3 sentences"""),
+RULES:
+- Answer directly from the context above
+- If asked "Who is HOD?" answer with the HOD name and contact
+- If asked about faculty, give their details
+- If asked about courses, list the courses
+- If asked about contacts, give email and phone
+- Be specific and helpful
+- Only say "not available" if the context truly has NO relevant info
+- Keep answer under 5 sentences"""),
         HumanMessage(content=question)
     ]
     response = llm.invoke(messages)
