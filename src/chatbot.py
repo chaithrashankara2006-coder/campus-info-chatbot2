@@ -48,7 +48,7 @@ def get_chatbot():
     return llm
 
 def ask_question(llm, context, question):
-    limited_context = context[:3000] if context else ""
+    limited_context = context[:6000] if context else ""
     
     messages = [
         SystemMessage(content=f"""You are a helpful campus information 
