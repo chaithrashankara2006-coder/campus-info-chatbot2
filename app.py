@@ -29,47 +29,47 @@ st.caption("PES College of Engineering — AI Campus Assistant")
 # Department wise PDF paths and URLs
 dept_info = {
     "Computer Science & Engineering": {
-        "pdf": "CSE.pdf",
+        "pdf": "data/pdfs/CSE.pdf",
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "AI & Machine Learning": {
-        "pdf": "CSE.pdf",
+        "pdf": "data/pdfs/CSE.pdf",
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Data Science": {
-        "pdf": "CSE.pdf",
+        "pdf": "data/pdfs/CSE.pdf",
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Computer Science & Business Systems": {
-        "pdf": "CSE.pdf",
+        "pdf": "data/pdfs/CSE.pdf",
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Electronics & Communication": {
-        "pdf": "ECE.pdf",
+        "pdf": "data/pdfs/ECE.pdf",
         "url": "https://pesce.ac.in/department-ece.php"
     },
     "Mechanical Engineering": {
-        "pdf": "MECH.pdf",
+        "pdf": "data/pdfs/MECH.pdf",
         "url": "https://pesce.ac.in/department-mechanical.php"
     },
     "Civil Engineering": {
-        "pdf": "CIVIL.pdf",
+        "pdf": "data/pdfs/CIVIL.pdf",
         "url": "https://pesce.ac.in/department-civil.php"
     },
     "Electrical Engineering": {
-        "pdf": "EEE.pdf",
+        "pdf": "data/pdfs/EEE.pdf",
         "url": "https://pesce.ac.in/department-eee.php"
     },
     "Information Science": {
-        "pdf": "ISE.pdf",
+        "pdf": "data/pdfs/ISE.pdf",
         "url": "https://pesce.ac.in/department-ise.php"
     },
     "Library": {
-        "pdf": "LIBRARY.pdf",
+        "pdf": "data/pdfs/LIBRARY.pdf",
         "url": "https://pesce.ac.in"
     },
     "Canteen": {
-        "pdf": "CANTEEN.pdf",
+        "pdf": "data/pdfs/CANTEEN.pdf",
         "url": "https://pesce.ac.in"
     },
     "Placement Cell": {
