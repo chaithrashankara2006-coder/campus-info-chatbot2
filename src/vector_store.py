@@ -1,5 +1,5 @@
 from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import CharacterTextSplitter
 
 def create_vector_store(text):
@@ -10,22 +10,15 @@ def create_vector_store(text):
     chunks = splitter.split_text(text)
     
     embeddings = HuggingFaceEmbeddings(
-        model_name="all-MiniLM-L6-v2"
+        model_name="all-MiniLM-L6-v2",
+        model_kwargs={"device": "cpu"},
+        encode_kwargs={"normalize_embeddings": False}
     )
     
     vector_store = FAISS.from_texts(chunks, embeddings)
     return vector_store
 
-def search_context(vector_store, question, k=10):
-    # Search with original question
+def search_context(vector_store, question, k=8):
     results = vector_store.similarity_search(question, k=k)
-    
-    # Also search with keywords
-    keywords = ["HOD", "Head of Department", "contact", "faculty", "professor"]
-    for keyword in keywords:
-        if keyword.lower() in question.lower():
-            extra = vector_store.similarity_search(keyword, k=3)
-            results += extra
-    
     context = "\n".join([doc.page_content for doc in results])
     return context
