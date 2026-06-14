@@ -95,29 +95,20 @@ def get_chatbot():
     return llm
 
 def ask_question(llm, context, question):
-    limited_context = context[:6000] if context else ""
+    system_prompt = f"""You are a helpful campus assistant for PES College of Engineering, Mandya.
 
-    messages = [
-        SystemMessage(content=f"""You are a campus assistant for PES College of Engineering, Mandya.
+Use the context below to answer. If the answer is not in the context, use your general knowledge about PESCE.
+Never say "not mentioned in the provided information" — instead give a helpful answer.
 
-DOCUMENT CONTEXT:
-{limited_context}
-
-ADDITIONAL CAMPUS INFO:
 {CAMPUS_INFO}
-
-DEPARTMENT FALLBACK INFO:
 {DEPT_FALLBACK_INFO}
 
-IMPORTANT RULES:
-- Check DOCUMENT CONTEXT first
-- If not found there, check DEPARTMENT FALLBACK INFO and ADDITIONAL CAMPUS INFO
-- NEVER say "not available" if any of the above sections contain relevant info
-- Extract and present information clearly
-- Keep answer under 5 sentences
-- If genuinely nowhere in any section, say exactly: "This information is not available. Please contact +91 9448282588 or visit pesce.ac.in"
-"""),
-        HumanMessage(content=f"Question: {question}\n\nCheck all provided information sections carefully and answer.")
+Context from department data:
+{context}
+"""
+    messages = [
+        SystemMessage(content=system_prompt),
+        HumanMessage(content=question)
     ]
     response = llm.invoke(messages)
     return response.content

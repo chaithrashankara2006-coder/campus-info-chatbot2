@@ -215,6 +215,9 @@ def load_dept_data(dept):
         )
     return True
 
+
+
+
 def get_response(prompt):
     current_store = st.session_state.vector_stores.get(
         st.session_state.selected_dept
@@ -222,7 +225,8 @@ def get_response(prompt):
     if current_store:
         context = search_context(current_store, prompt)
     else:
-        context = "No information loaded yet."
+        context = f"Department: {st.session_state.selected_dept} at PESCE, Mandya."
+    
     return ask_question(st.session_state.llm, context, prompt)
 
 # Sidebar
