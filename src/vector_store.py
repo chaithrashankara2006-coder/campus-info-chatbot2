@@ -21,7 +21,25 @@ def create_vector_store(text):
     vector_store = FAISS.from_texts(chunks, embeddings)
     return vector_store
 
-def search_context(vector_store, question, k=8):
-    results = vector_store.similarity_search(question, k=k)
-    context = "\n".join([doc.page_content for doc in results])
-    return context
+def search_context(vector_store, question, k=15):
+    text = vector_store
+    question_lower = question.lower()
+    
+    paragraphs = [p.strip() for p in text.split('\n') if p.strip()]
+    keywords = question_lower.split()
+    
+    scored = []
+    for para in paragraphs:
+        para_lower = para.lower()
+        score = sum(1 for kw in keywords if kw in para_lower)
+        if score > 0:
+            scored.append((score, para))
+    
+    scored.sort(reverse=True)
+    top = [p for _, p in scored[:k]]
+    
+    # Fallback: if nothing matched, send first 4000 chars of full text
+    if not top:
+        return text[:4000]
+    
+    return "\n".join(top)
