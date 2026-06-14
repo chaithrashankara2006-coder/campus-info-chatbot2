@@ -333,13 +333,6 @@ for i, (label, question) in enumerate(location_questions):
 
 st.divider()
 
-# Chat interface
-st.subheader("💬 Chat")
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.write(msg["content"])
-
-# Handle quick questions
 if "quick_q" in st.session_state:
     prompt = st.session_state.quick_q
     del st.session_state.quick_q
@@ -355,6 +348,15 @@ if "quick_q" in st.session_state:
             st.session_state.messages.append(
                 {"role": "assistant", "content": response}
             )
+
+# Chat interface
+st.subheader("💬 Chat")
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.write(msg["content"])
+
+# Handle quick questions
+
 
 # User input
 if prompt := st.chat_input(f"Ask about {dept}..."):
