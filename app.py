@@ -178,6 +178,7 @@ if "selected_dept" not in st.session_state:
     st.session_state.selected_dept = "Computer Science & Engineering"
 
 # Functions
+
 def load_dept_data(dept):
     if dept not in st.session_state.vector_stores:
         info = dept_info.get(dept, {})
@@ -198,7 +199,7 @@ def load_dept_data(dept):
 
         if url:
             scraped = scrape_website(url)
-            if scraped and "Error" not in scraped:
+            if scraped and "Error" not in scraped and len(scraped.strip()) > 0:
                 combined_text += "\n" + scraped
                 st.sidebar.write(f"✅ Website scraped: {len(scraped)} chars")
             else:
@@ -212,6 +213,9 @@ def load_dept_data(dept):
             create_vector_store(combined_text)
         )
     return True
+
+
+
 
 def get_response(prompt):
     current_store = st.session_state.vector_stores.get(
