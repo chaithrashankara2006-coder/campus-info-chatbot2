@@ -83,11 +83,11 @@ dept_info = {
         "url": "https://pesce.ac.in/hostel.php"
     },
     "Transport": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "TRANSPORT.pdf"),
+        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CollegeRules.pdf"),
         "url": "https://pesce.ac.in/transport.php"
     },
     "College Rules": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "Rules.pdf"),
+        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CollegeRules.pdf"),
         "url": "https://pesce.ac.in/about.php"
     },
     "Sports & Facilities": {
