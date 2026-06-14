@@ -96,7 +96,7 @@ def get_chatbot():
 
 def ask_question(llm, context, question):
     limited_context = context[:6000] if context else ""
-    
+
     messages = [
         SystemMessage(content=f"""You are a campus assistant for PES College of Engineering, Mandya.
 
@@ -109,14 +109,15 @@ ADDITIONAL CAMPUS INFO:
 DEPARTMENT FALLBACK INFO:
 {DEPT_FALLBACK_INFO}
 
-IMPORTANT:
+IMPORTANT RULES:
 - Check DOCUMENT CONTEXT first
 - If not found there, check DEPARTMENT FALLBACK INFO and ADDITIONAL CAMPUS INFO
 - NEVER say "not available" if any of the above sections contain relevant info
 - Extract and present information clearly
-- If genuinely nowhere, say: "Please contact +91 9448282588"
+- Keep answer under 5 sentences
+- If genuinely nowhere in any section, say exactly: "This information is not available. Please contact +91 9448282588 or visit pesce.ac.in"
 """),
-        HumanMessage(content=f"Question: {question}\n\nCheck all provided information carefully and answer.")
+        HumanMessage(content=f"Question: {question}\n\nCheck all provided information sections carefully and answer.")
     ]
     response = llm.invoke(messages)
     return response.content
