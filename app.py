@@ -192,29 +192,28 @@ def load_dept_data(dept):
                 pdf_text = process_pdf(pdf_path)
                 if pdf_text:
                     combined_text += pdf_text
-                    st.sidebar.write(f"PDF loaded: {len(pdf_text)} chars")
+                    st.sidebar.write(f"✅ PDF loaded: {len(pdf_text)} chars")
                 else:
-                    st.sidebar.write(f"PDF empty: {pdf_path}")
+                    st.sidebar.write(f"⚠️ PDF empty: {pdf_path}")
             else:
-                st.sidebar.write(f"PDF not found: {pdf_path}")
+                st.sidebar.write(f"❌ PDF not found: {pdf_path}")
 
         if url:
             scraped = scrape_website(url)
             if scraped and "Error" not in scraped and len(scraped.strip()) > 0:
                 combined_text += "\n" + scraped
-                st.sidebar.write(f"Website scraped: {len(scraped)} chars")
+                st.sidebar.write(f"✅ Website scraped: {len(scraped)} chars")
             else:
-                st.sidebar.write(f"Web scrape failed: {scraped[:100]}")
+                st.sidebar.write(f"❌ Web scrape failed: {scraped[:100]}")
 
         if not combined_text.strip():
             combined_text = f"Information about {dept} at PES College of Engineering, Mandya, Karnataka."
-            st.sidebar.write("Using fallback text")
+            st.sidebar.write(f"⚠️ Using fallback text")
 
         st.session_state.vector_stores[dept] = (
             create_vector_store(combined_text)
         )
     return True
-
 
 
 
@@ -355,7 +354,7 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.write(msg["content"])
 
-# Handle quick questions
+
 
 
 # User input
