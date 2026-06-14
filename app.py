@@ -197,10 +197,12 @@ def load_dept_data(dept):
                 st.sidebar.write(f"❌ PDF not found: {pdf_path}")
 
         if url:
-            scraped = scrape_website(url)
-            if scraped and "Error" not in scraped:
-                combined_text += "\n" + scraped
-                st.sidebar.write(f"✅ Website scraped")
+    scraped = scrape_website(url)
+    if scraped and "Error" not in scraped:
+        combined_text += "\n" + scraped
+        st.sidebar.write(f"✅ Website scraped: {len(scraped)} chars")
+    else:
+        st.sidebar.write(f"❌ Web scrape failed: {scraped[:100]}")
 
         if not combined_text.strip():
             combined_text = f"Information about {dept} at PES College of Engineering, Mandya, Karnataka."
