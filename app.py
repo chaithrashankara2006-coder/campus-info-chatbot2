@@ -5,8 +5,6 @@ from src.web_scraper import scrape_website
 from src.document_processor import process_pdf
 from src.vector_store import create_vector_store, search_context
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 st.set_page_config(
     page_title="Campus Info Chatbot",
     page_icon="🎓",
@@ -31,67 +29,67 @@ st.caption("PES College of Engineering — AI Campus Assistant")
 # Department wise PDF paths and URLs
 dept_info = {
     "Computer Science & Engineering": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CSE.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CSE.pdf"),
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "AI & Machine Learning": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CSE.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CSE.pdf"),
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Data Science": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CSE.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CSE.pdf"),
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Computer Science & Business Systems": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CSE.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CSE.pdf"),
         "url": "https://pesce.ac.in/department-computer-science.php"
     },
     "Electronics & Communication": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "ECE.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "ECE.pdf"),
         "url": "https://pesce.ac.in/department-ece.php"
     },
     "Mechanical Engineering": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "MECH.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "MECH.pdf"),
         "url": "https://pesce.ac.in/department-mechanical.php"
     },
     "Civil Engineering": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CIVIL.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CIVIL.pdf"),
         "url": "https://pesce.ac.in/department-civil.php"
     },
     "Electrical Engineering": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "EEE.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "EEE.pdf"),
         "url": "https://pesce.ac.in/department-eee.php"
     },
     "Information Science": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "ISE.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "ISE.pdf"),
         "url": "https://pesce.ac.in/department-ise.php"
     },
     "Library": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "LIBRARY.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "LIBRARY.pdf"),
         "url": "https://pesce.ac.in"
     },
     "Canteen": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CANTEEN.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CANTEEN.pdf"),
         "url": "https://pesce.ac.in"
     },
     "Placement Cell": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "PLACEMENT.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "PLACEMENT.pdf"),
         "url": "https://pesce.ac.in/placements.php"
     },
     "Hostel": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "HOSTEL.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "HOSTEL.pdf"),
         "url": "https://pesce.ac.in/hostel.php"
     },
     "Transport": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CollegeRules.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CollegeRules.pdf"),
         "url": "https://pesce.ac.in/transport.php"
     },
     "College Rules": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "CollegeRules.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "CollegeRules.pdf"),
         "url": "https://pesce.ac.in/about.php"
     },
     "Sports & Facilities": {
-        "pdf": os.path.join(BASE_DIR, "data", "pdfs", "SPORTS.pdf"),
+        "pdf": os.path.join(os.path.dirname(__file__), "data", "pdfs", "SPORTS.pdf"),
         "url": "https://pesce.ac.in/facilities.php"
     },
 }
@@ -223,8 +221,7 @@ def get_response(prompt):
     if current_store:
         context = search_context(current_store, prompt)
     else:
-        context = f"Department: {st.session_state.selected_dept} at PESCE, Mandya."
-    
+        context = "No information loaded yet."
     return ask_question(st.session_state.llm, context, prompt)
 
 # Sidebar
@@ -254,8 +251,8 @@ with st.sidebar:
         type="pdf"
     )
     if uploaded_file:
-        pdf_path = os.path.join(BASE_DIR, "data", "pdfs", f"{dept.replace(' ', '_')}.pdf")
-        os.makedirs(os.path.join(BASE_DIR, "data", "pdfs"), exist_ok=True)
+        pdf_path = f"data/pdfs/{dept.replace(' ', '_')}.pdf"
+        os.makedirs("data/pdfs", exist_ok=True)
         with open(pdf_path, "wb") as f:
             f.write(uploaded_file.read())
         with st.spinner(f"Processing {dept} PDF..."):
@@ -331,6 +328,14 @@ for i, (label, question) in enumerate(location_questions):
 
 st.divider()
 
+# Chat interface
+
+st.subheader("💬 Chat")
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.write(msg["content"])
+
+# Handle quick questions
 if "quick_q" in st.session_state:
     prompt = st.session_state.quick_q
     del st.session_state.quick_q
@@ -346,15 +351,6 @@ if "quick_q" in st.session_state:
             st.session_state.messages.append(
                 {"role": "assistant", "content": response}
             )
-
-# Chat interface
-st.subheader("💬 Chat")
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.write(msg["content"])
-
-
-
 
 # User input
 if prompt := st.chat_input(f"Ask about {dept}..."):
