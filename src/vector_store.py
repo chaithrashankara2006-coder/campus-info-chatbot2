@@ -46,11 +46,14 @@ def search_context(vector_store, question, k=20):
         para_lower = para.lower()
         score = sum(1 for kw in expanded_keywords if kw in para_lower)
 
+        
         # Strong boost for HOD-related queries
         if "hod" in expanded_keywords or "head" in expanded_keywords:
-            if "professor & head of department" in para_lower or "associate professor & hod" in para_lower or "& hod" in para_lower:
-                score += 20
-            elif "head of department" in para_lower or "hod" in para_lower:
+            has_hod_term = "head of department" in para_lower or "hod" in para_lower
+            has_name = "dr." in para_lower or para_lower.strip().startswith("hod")
+            if has_hod_term and has_name:
+                score += 25
+            elif has_hod_term:
                 score += 5
 
         if score > 0:
@@ -58,7 +61,7 @@ def search_context(vector_store, question, k=20):
 
     scored.sort(reverse=True)
     top = [p for _, p in scored[:k]]
-    
+
     if not top:
         return text[:5000]
 
