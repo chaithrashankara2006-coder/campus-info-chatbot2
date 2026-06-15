@@ -90,12 +90,31 @@ def get_chatbot():
     llm = ChatGroq(
         model="llama-3.3-70b-versatile",
         groq_api_key=api_key,
-        max_tokens=500
+        max_tokens=300
     )
     return llm
 
-def ask_question(llm, context, question):
-    limited_context = context[:8000] if context else ""
+def ask_question(llm, context, question, dept=""):
+    limited_context = context[:4000] if context else ""
+
+    dept_key_map = {
+        "Library": "LIBRARY INFO",
+        "Canteen": "CANTEEN INFO",
+        "Hostel": "HOSTEL INFO",
+        "Transport": "TRANSPORT INFO",
+        "Placement Cell": "PLACEMENT CELL INFO",
+        "College Rules": "COLLEGE RULES",
+        "Sports & Facilities": "SPORTS & FACILITIES",
+    }
+
+    relevant_fallback = ""
+    section_name = dept_key_map.get(dept)
+    if section_name:
+        blocks = DEPT_FALLBACK_INFO.split("\n\n")
+        for block in blocks:
+            if section_name in block:
+                relevant_fallback = block
+                break
 
     messages = [
         SystemMessage(content=f"""You are a campus assistant for PES College of Engineering, Mandya.
@@ -103,21 +122,19 @@ def ask_question(llm, context, question):
 DOCUMENT CONTEXT:
 {limited_context}
 
-ADDITIONAL CAMPUS INFO:
-{CAMPUS_INFO}
+RELEVANT INFO:
+{relevant_fallback}
 
-DEPARTMENT FALLBACK INFO:
-{DEPT_FALLBACK_INFO}
+CAMPUS LOCATION INFO:
+{CAMPUS_INFO[:800]}
 
 IMPORTANT RULES:
-- Check DOCUMENT CONTEXT first
-- If not found there, check DEPARTMENT FALLBACK INFO and ADDITIONAL CAMPUS INFO
-- NEVER say "not available" if any of the above sections contain relevant info
-- Extract and present information clearly
-- Keep answer under 5 sentences
-- If genuinely nowhere in any section, say exactly: "This information is not available. Please contact +91 9448282588 or visit pesce.ac.in"
+- Check DOCUMENT CONTEXT first, then RELEVANT INFO, then CAMPUS LOCATION INFO
+- NEVER say "not available" if any section has relevant info
+- Keep answer under 4 sentences
+- If genuinely nowhere, say: "This information is not available. Please contact +91 9448282588 or visit pesce.ac.in"
 """),
-        HumanMessage(content=f"Question: {question}\n\nCheck all provided information sections carefully and answer.")
+        HumanMessage(content=question)
     ]
     response = llm.invoke(messages)
     return response.content
