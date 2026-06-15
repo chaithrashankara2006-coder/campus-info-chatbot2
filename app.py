@@ -222,7 +222,7 @@ def get_response(prompt):
         context = search_context(current_store, prompt)
     else:
         context = "No information loaded yet."
-    return ask_question(st.session_state.llm, context, prompt)
+    return ask_question(st.session_state.llm, context, prompt, st.session_state.selected_dept)
 
 # Sidebar
 with st.sidebar:
