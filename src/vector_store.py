@@ -21,7 +21,7 @@ def search_context(vector_store, question, k=20):
     buffer = ""
     for p in paragraphs:
         buffer += " " + p
-        if len(buffer) > 150:
+        if len(buffer) > 80:
             merged.append(buffer.strip())
             buffer = ""
     if buffer:
@@ -45,12 +45,20 @@ def search_context(vector_store, question, k=20):
     for para in merged:
         para_lower = para.lower()
         score = sum(1 for kw in expanded_keywords if kw in para_lower)
+
+        # Strong boost for HOD-related queries
+        if "hod" in expanded_keywords or "head" in expanded_keywords:
+            if "professor & head of department" in para_lower or "associate professor & hod" in para_lower or "& hod" in para_lower:
+                score += 20
+            elif "head of department" in para_lower or "hod" in para_lower:
+                score += 5
+
         if score > 0:
             scored.append((score, para))
 
     scored.sort(reverse=True)
     top = [p for _, p in scored[:k]]
-
+    
     if not top:
         return text[:5000]
 
