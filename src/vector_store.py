@@ -27,8 +27,9 @@ def search_context(vector_store, question, k=20):
     if buffer:
         merged.append(buffer.strip())
 
-    keywords = [w for w in question_lower.split() if len(w) > 2]
-
+    import string
+    keywords = [w.strip(string.punctuation) for w in question_lower.split()]
+    keywords = [w for w in keywords if len(w) > 2]
     # Add synonym expansion for common terms
     synonym_map = {
         "hod": ["head of department", "hod", "head"],
