@@ -95,7 +95,7 @@ def get_chatbot():
     return llm
 
 def ask_question(llm, context, question, dept=""):
-    limited_context = context[:4000] if context else ""
+    limited_context = context[:5000] if context else ""
 
     dept_key_map = {
         "Library": "LIBRARY INFO",
